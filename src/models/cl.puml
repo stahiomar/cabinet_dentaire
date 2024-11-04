@@ -1,0 +1,161 @@
+@startuml
+class Personne {
+    - id: String
+    - index: Long
+    - nom: String
+    - prenom: String
+    - adresse: String
+    - telephone: String
+    - email: String
+    - cin: String
+}
+
+class User <<Personne>> {
+    - username: String
+    - password: String
+}
+
+class Patient <<Personne>> {
+    - dateNaissance: LocalDate
+    - mutuelle: Mutuelle
+    - AntecedantMedicaux: ArrayList<AntecedantMedical>
+    - dossierMedical: DossierMedical
+}
+
+class Dentiste <<User>> {
+    - specialite: Specialite
+}
+
+class Secretaire <<User>> {
+    - SalaireDeBase: Double
+    - dateDeRetoure: LocalDate
+    - prime: Double
+}
+
+class Acte {
+    - idActe: String
+    - interventions: ArrayList<InterventionMedecin>
+    - prixDeBase: Double
+    - categorie: CategorieActe
+}
+
+enum CategorieActe {
+    PREVENTION,
+    CHIRURGIE,
+    ORTHODONTIE,
+    IMPLANTOLOGIE,
+    SOINS_DES_CARIES,
+    PROTHESE_DENTAIRE,
+    DIAGNOSTIC,
+    SOINS_DES_TISSUS_MOUS
+}
+
+class AntecedantMedical {
+    - idAntecedant: String
+    - patientAvecCeAntecedantMedacal: ArrayList<Patient>
+    - libelle: String
+    - categorie: CategorieAntecedentMedicaux
+}
+
+enum CategorieAntecedentMedicaux {
+    MALADIE_CHRONIQUE, CONTRE_INDICATION, AUTRE, MALADIE_HEREDITAIRE, ALLERGIE
+    - risqueAssocie: Risque
+}
+
+class DossierMedical {
+    - Consultations: ArrayList<Consultation>
+    - dateCreation: LocalDate
+    - patient: Patient
+    - numeroDossier: String
+}
+
+enum Risque {
+    FAIBLE,
+    MOYEN,
+    ELEVE,
+    INCONNU
+}
+
+class Consultation {
+    - idConsultation: String
+    - interventions: ArrayList<InterventionMedecin>
+    - dossierMedical: DossierMedical
+    - dateConsultation: LocalDate
+    - typeConsultation: TypeConsultation
+    - factures: ArrayList<Facture>
+}
+
+enum TypeConsultation {
+    CONSULTATION_GENERAL,
+    SUIVI,
+    URGENCE
+}
+
+class Facture {
+    - montantRestant: Double
+    - montantPaye: Double
+    - idFacture: String
+    - statutPaiement: StatutPaiement
+    - dateFactureation: LocalDate
+    - MontantTotal: Double
+    - consultation: Consultation
+    - typePaiement: TypePaiement
+}
+
+enum StatutPaiement {
+    EN_ATTENTTE,
+    IMPAYE,
+    PAYE
+}
+
+enum TypePaiement {
+    CHEQUE,
+    VIREMENT,
+    CARTE_CREDIT,
+    ESPECE,
+    AUTRE
+}
+
+
+class InterventionMedecin {
+    - idIntervention: String
+    - noteMedecin: String
+    - prixPatient: Double
+    - dent: Long
+    - acte: Acte
+    - consultation: Consultation
+}
+
+enum Mutuelle {
+    CNSS, CIMR, CNAM, CNOPS
+}
+
+enum Specialite {
+    ENDODONTIE,
+    CHIRURGIE_DENTAIRE,
+    PROTHESE,
+    ORTHODONTE,
+    PARODONTOLOGIE
+}
+
+
+Secretaire --|> User
+Dentiste --|> User
+User --|> Personne
+Acte -- CategorieActe
+CategorieAntecedentMedicaux -- Risque
+AntecedantMedical -- CategorieAntecedentMedicaux
+DossierMedical -- Patient
+Consultation -- TypeConsultation
+Facture -- StatutPaiement
+Facture -- TypePaiement
+InterventionMedecin -- Acte
+Patient --|> Personne
+InterventionMedecin -- Consultation
+Mutuelle -- Patient
+Specialite -- Dentiste
+Facture -- Consultation
+DossierMedical -- Consultation
+AntecedantMedical -- Patient
+
+@enduml
